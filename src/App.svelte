@@ -1,0 +1,323 @@
+<script>
+    import Button from "./Button.svelte";
+    import TextBox from "./TextBox.svelte";
+    import Message from "./Message.svelte";
+</script>
+
+<div class="container">
+    <header />
+
+    <main>
+        <section id="player">
+            <div class="player-contents-container">
+                <h1><span id="rajpath">Rajpath</span>Recalls</h1>
+                <div class="play-button-container">
+                    <div class="play-ring">
+                        <div class="play-ring">
+                            <div class="play-ring">
+                                <div class="play-ring">
+                                    <div class="play-button">
+                                        <img id="play-icon" src="icons/play.svg">
+                                        <img id="pause-icon" src="icons/pause.svg">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p id="tagline">
+                    <span id="musiccloud">MusicCloud</span> 1000+ Songs
+                </p>
+                <div class="controls-container">
+                    <div class="control-icon-wrapper">
+                        <img class="control-icon" src="icons/calendar.svg" alt="Calendar">
+                    </div>
+                    <div class="control-icon-wrapper">
+                        <img class="control-icon" src="icons/message-circle.svg" alt="Chat">
+                        <div id="new-message-icon"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="section">
+            <div class="section-content-container">
+                <h2>About Us</h2>
+                <p>
+                    The Rajpath RECalls Web App is for radio broadcasting events
+                    happening in and related to NIT Calicut, which is conducted
+                    for and by the students. This is a broadcasting open-source
+                    web app, with multiple features including:
+                </p>
+                <ul>
+                    <li>Real-time update of events and its schedule</li>
+                    <li>Live comment section</li>
+                    <li>Play-in background set-up</li>
+                    <li>Accessible from the notification bar</li>
+                    <li>Ad-free</li>
+                    <li>Responsive to all devices</li>
+                </ul>
+            </div>
+        </section>
+
+        <section id="section">
+            <div class="section-content-container">
+                <h2>Events</h2>
+                <p>
+                    A radio without its listeners is like food without salt and
+                    spices. We would love to be able to connect with all of our
+                    listeners and help improve your experience. Here you will
+                    find a google form where you can make song requests, song
+                    dedications for Serenade, share stories for our Chai Un-Cut
+                    or give topics to be discussed in Unfiltered.
+                </p>
+            </div>
+        </section>
+
+        <section id="section">
+            <div class="section-content-container">
+                <h2>Recall & Request</h2>
+                <p>
+                    A radio without its listeners is like food without salt and
+                    spices. We would love to be able to connect with all of our
+                    listeners and help improve your experience. Here you will
+                    find a google form where you can make song requests, song
+                    dedications for Serenade, share stories for our Chai Un-Cut
+                    or give topics to be discussed in Unfiltered.
+                </p>
+            </div>
+        </section>
+
+        <section id="section">
+            <div class="section-content-container">
+                <h2>Contact Us</h2>
+                <p>
+                    Any new venture can grow only with the help of constant
+                    feedback. Feel free to contact us
+                </p>
+                <p>
+                    <a href="mailto:rajapathrecalls@gmail.com">rajapathrecalls@gmail.com</a>
+                </p>
+                <div class="social-icons-container">
+                    <div class="social-icon-wrapper"><img class="social-icon" src="icons/facebook.svg" alt="Facebook"></div>
+                    <div class="social-icon-wrapper"><img class="social-icon" src="icons/linkedin.svg" alt="LinkedIn"></div>
+                    <div class="social-icon-wrapper"><img class="social-icon" src="icons/github.svg" alt="GitHub"></div>
+                    <div class="social-icon-wrapper"><img class="social-icon" src="icons/instagram.svg" alt="Instagram"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer />
+</div>
+
+<style>
+    .container {
+        margin: 0 auto;
+        width: 100%;
+        max-width: 600px;
+        min-width: 300px;
+    }
+
+    #player {
+        height: 100vh;
+    }
+
+    .player-contents-container {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    h1 {
+        letter-spacing: 0.5px;
+        color: rgba(255, 255, 255, 0.9);
+        font-weight: 300;
+        background: rgb(255, 255, 255);
+        background: linear-gradient(
+            90deg,
+            rgb(255, 255, 255) 0%,
+            rgb(184, 184, 184) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 28px;
+    }
+
+    #rajpath {
+        font-weight: 600;
+        background: rgb(255, 58, 58);
+        background: linear-gradient(
+            90deg,
+            rgb(250, 50, 50) 0%,
+            rgb(209, 16, 122) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    #tagline {
+        font-weight: 300;
+        margin-top: 30px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    #musiccloud {
+        margin-right: 3px;
+        font-weight: 600;
+        letter-spacing: 1px;
+    }
+
+    .play-button-container {
+        display: flex;
+    }
+
+    .play-ring {
+        display: flex;
+        background: rgb(255, 58, 58);
+        background: linear-gradient(
+            90deg,
+            rgba(255, 58, 58, 0.2) 0%,
+            rgba(200, 33, 126, 0.2) 100%
+        );
+        padding: 15px;
+        border-radius: 50%;
+        box-shadow: 2px 3px 20px rgba(95, 6, 51, 0.26);
+    }
+
+    #play-icon, #pause-icon {
+        user-select: none;
+        margin-left: 3px;
+        width: 30px;
+        height: 30px;
+        opacity: 0.7;
+        display: block;
+    }
+
+    #pause-icon {
+        margin: 0;
+        display: none;
+    }
+
+    .play-button {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        background: rgb(255, 58, 58);
+        background: linear-gradient(
+            90deg,
+            rgba(255, 58, 58, 1) 0%,
+            rgba(200, 33, 126, 1) 100%
+        );
+        box-shadow: 2px 3px 20px rgba(95, 6, 51, 0.26);
+        transition: 0.3s ease all;
+    }
+
+    .play-button:hover {
+        box-shadow: 3px 5px 20px rgba(88, 6, 47, 0.6);
+    }
+
+    .play-button:active {
+        box-shadow: 2px 3px 20px rgba(95, 6, 51, 0.26);
+    }
+
+    #new-message-icon {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        width: 12px;
+        height: 12px;
+        background-color: rgba(250, 41, 76, 0.9);
+        border-radius: 50%;
+    }
+
+    .controls-container {
+        margin-top: 25px;
+        width: 250px;
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+    }
+
+    .control-icon-wrapper, .social-icon-wrapper {
+        position: relative;
+        background-color: rgba(255, 255, 255, 0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: 0.1s ease all;
+    }
+
+    .control-icon-wrapper:hover, .social-icon-wrapper:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .control-icon-wrapper:active, .social-icon-wrapper:active {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .control-icon, .social-icon {
+        user-select: none;
+        opacity: 0.8;
+        width: 30px;
+        height: 30px;
+    }
+
+    .social-icons-container {
+        margin-top: 50px;
+        display: flex;
+        width: 80%;
+        justify-content: space-between;
+    }
+
+    #section {
+        margin: 100px 0;
+        text-align: center;
+        color: rgba(255, 255, 255, 0.5);
+    }
+
+    #section h2 {
+        font-size: 20px;
+        font-weight: 600;
+        margin: 0;
+    }
+
+    .section-content-container {
+        width: 70%;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #section p {
+        line-height: 20px;
+        font-weight: 100;
+        letter-spacing: 1px;
+        line-height: 20px;
+        font-size: 14px;
+    }
+
+    #section ul {
+        text-align: left;
+    }
+
+    a {
+        color: #58a1f3;
+        text-decoration: none;
+        font-weight: 500;
+    }
+</style>
