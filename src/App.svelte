@@ -1,12 +1,16 @@
 <script>
     import { onMount } from "svelte"
     import Chat from "./Chat.svelte";
+    import Calendar from './Calendar.svelte'
 
     let chatButton
     let chatBox
+    let calendarButton
+    let calendar
     
     onMount(() => {
         chatButton.onclick = () => {viewChatBox(true)}
+        calendarButton.onclick = () => {viewCalendar(true)}
     })
 
     const viewChatBox = (show) => {
@@ -14,6 +18,15 @@
             chatBox.style.display = "block"
         else
             chatBox.style.display = "none"
+
+        console.log(show)
+    }
+
+    const viewCalendar = (show) => {
+        if(show)
+            calendar.style.display = "block"
+        else
+            calendar.style.display = "none"
 
         console.log(show)
     }
@@ -43,10 +56,10 @@
                     <span id="musiccloud">MusicCloud</span> 1000+ Songs
                 </p>
                 <div class="controls-container">
-                    <div id="calendar-button" class="control-icon-wrapper">
+                    <div bind:this={calendarButton} class="control-icon-wrapper">
                         <img class="control-icon" src="icons/calendar.svg" alt="Calendar">
                     </div>
-                    <div bind:this={chatButton} id="chat-button" class="control-icon-wrapper">
+                    <div bind:this={chatButton} class="control-icon-wrapper">
                         <img class="control-icon" src="icons/message-circle.svg" alt="Chat">
                         <div id="new-message-icon"></div>
                     </div>
@@ -54,8 +67,12 @@
             </div>
         </section>
 
-        <div bind:this={chatBox} class="chat-container">
+        <div bind:this={chatBox} class="modal-container hide">
             <Chat viewChatBox={ viewChatBox } />
+        </div>
+
+        <div bind:this={calendar} class="modal-container hide">
+            <Calendar viewCalendar={ viewCalendar }/>
         </div>
 
         <section id="section">
@@ -365,7 +382,7 @@
         font-weight: 500;
     }
 
-    .chat-container {
+    .modal-container {
         z-index: 2;
         border-radius: 15px;
         position: fixed;
