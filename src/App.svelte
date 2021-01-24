@@ -1,12 +1,26 @@
 <script>
-    import Button from "./Button.svelte";
-    import TextBox from "./TextBox.svelte";
-    import Message from "./Message.svelte";
+    import { onMount } from "svelte"
+    import Chat from "./Chat.svelte";
+
+    let chatButton
+    let chatBox
+    
+    onMount(() => {
+        chatButton.onclick = () => {viewChatBox(true)}
+    })
+
+    const viewChatBox = (show) => {
+        if(show)
+            chatBox.style.display = "block"
+        else
+            chatBox.style.display = "none"
+
+        console.log(show)
+    }
+
 </script>
 
 <div class="container">
-    <header />
-
     <main>
         <section id="player">
             <div class="player-contents-container">
@@ -29,16 +43,20 @@
                     <span id="musiccloud">MusicCloud</span> 1000+ Songs
                 </p>
                 <div class="controls-container">
-                    <div class="control-icon-wrapper">
+                    <div id="calendar-button" class="control-icon-wrapper">
                         <img class="control-icon" src="icons/calendar.svg" alt="Calendar">
                     </div>
-                    <div class="control-icon-wrapper">
+                    <div bind:this={chatButton} id="chat-button" class="control-icon-wrapper">
                         <img class="control-icon" src="icons/message-circle.svg" alt="Chat">
                         <div id="new-message-icon"></div>
                     </div>
                 </div>
             </div>
         </section>
+
+        <div bind:this={chatBox} class="chat-container hide">
+            <Chat viewChatBox={ viewChatBox } />
+        </div>
 
         <section id="section">
             <div class="section-content-container">
@@ -99,16 +117,30 @@
                     <a href="mailto:rajapathrecalls@gmail.com">rajapathrecalls@gmail.com</a>
                 </p>
                 <div class="social-icons-container">
-                    <div class="social-icon-wrapper"><img class="social-icon" src="icons/facebook.svg" alt="Facebook"></div>
-                    <div class="social-icon-wrapper"><img class="social-icon" src="icons/linkedin.svg" alt="LinkedIn"></div>
-                    <div class="social-icon-wrapper"><img class="social-icon" src="icons/github.svg" alt="GitHub"></div>
-                    <div class="social-icon-wrapper"><img class="social-icon" src="icons/instagram.svg" alt="Instagram"></div>
+                    <a href="https://www.facebook.com/rajpath.recalls" target="__blank">
+                        <div class="social-icon-wrapper">
+                            <img class="social-icon" src="icons/facebook.svg" alt="Facebook">
+                        </div>
+                    </a>
+                    <a href="https://in.linkedin.com/in/rajpath-recalls-radio-976757200" target="__blank">
+                        <div class="social-icon-wrapper">
+                            <img class="social-icon" src="icons/linkedin.svg" alt="LinkedIn">
+                        </div>
+                    </a>
+                    <a href="https://github.com/rajpathrecalls" target="__blank">
+                        <div class="social-icon-wrapper">
+                            <img class="social-icon" src="icons/github.svg" alt="GitHub">
+                        </div>
+                    </a>
+                    <a href="https://www.instagram.com/rajpath.recalls_nitc/" target="__blank">
+                        <div class="social-icon-wrapper">
+                            <img class="social-icon" src="icons/instagram.svg" alt="Instagram">
+                        </div>
+                    </a>
                 </div>
             </div>
         </section>
     </main>
-
-    <footer />
 </div>
 
 <style>
@@ -268,6 +300,13 @@
         background-color: rgba(255, 255, 255, 0.1);
     }
 
+    .social-icon-wrapper {
+        box-sizing: border-box;
+        margin: 0 5px;
+        width: 45px;
+        height: 45px;
+    }
+
     .control-icon, .social-icon {
         user-select: none;
         opacity: 0.8;
@@ -275,10 +314,15 @@
         height: 30px;
     }
 
+    .social-icon {
+        width: 20px;
+        height: 20px;
+    }
+
     .social-icons-container {
         margin-top: 50px;
         display: flex;
-        width: 80%;
+        width: 90%;
         justify-content: space-between;
     }
 
@@ -319,5 +363,22 @@
         color: #58a1f3;
         text-decoration: none;
         font-weight: 500;
+    }
+
+    .chat-container {
+        z-index: 2;
+        border-radius: 15px;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: auto;
+        width: 90%;
+        height: 80vh;
+        max-width: 400px;
+        background-color: rgba(19, 13, 31, 0.795);
+        backdrop-filter: blur(12px);
+        box-shadow: 2px 2px 25px rgba(3, 4, 19, 0.534);
     }
 </style>

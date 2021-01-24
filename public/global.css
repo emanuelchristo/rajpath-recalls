@@ -3,3 +3,7 @@ body {
     margin: 0;
     background-color: rgb(25, 25, 49);
 }
+
+.hide {
+    display: none;
+}
