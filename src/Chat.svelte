@@ -1,6 +1,40 @@
 <script>
     import { onMount } from 'svelte'
+    import Message from './Message.svelte'
     export let viewChatBox
+
+    let messages = [
+        {
+            username: "emanuel.christo",
+            body: "This is a dummy message",
+            time: "3:54 pm"
+        },
+        {
+            username: "bottlecap",
+            body: "This is a dummy message",
+            time: "3:54 pm"
+        },
+        {
+            username: "toothbrush",
+            body: "This is a dummy message",
+            time: "3:54 pm"
+        },
+        {
+            username: "mouse",
+            body: "This is a dummy message",
+            time: "3:54 pm"
+        },
+        {
+            username: "laptop",
+            body: "This is a dummy message",
+            time: "3:54 pm"
+        },
+        {
+            username: "warrior",
+            body: "This is a dummy message",
+            time: "3:54 pm"
+        }
+    ]
 
     let closeButton
 
@@ -11,110 +45,18 @@
 
 <div class="chat-container">
     <div class="username-container">
-        <input id="username-input" type="text" placeholder="Username" value="cris">
+        <div>
+            <span class="at">@</span>
+            <input id="username-input" type="text" placeholder="Username" value="cris">
+        </div>
         <div bind:this={ closeButton } class="close-icon-wrapper">
             <img src="icons/x.svg" alt="Close">
         </div>
     </div>
     <div class="messages-container">
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
-        Hello<br>
+        {#each messages as message}
+            <Message msg={ message } />
+        {/each}
     </div>
     <div class="message-input-container">
         <input id="message-input" type="text" placeholder="Type something...">
@@ -136,11 +78,12 @@
     }
 
     .messages-container {
-        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         width: 100%;
         flex-grow: 1;
-        overflow: scroll;
-        background-color: rgba(255, 255, 255, 0.014);
+        overflow-y: scroll;
     }
 
     .message-input-container {
@@ -234,4 +177,10 @@
         width: 170px;
     }
 
+    .at {
+        font-size: 14px;
+        margin-right: 3px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.8);
+    }
 </style>

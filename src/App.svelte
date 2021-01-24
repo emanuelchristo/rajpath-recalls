@@ -54,7 +54,7 @@
             </div>
         </section>
 
-        <div bind:this={chatBox} class="chat-container hide">
+        <div bind:this={chatBox} class="chat-container">
             <Chat viewChatBox={ viewChatBox } />
         </div>
 

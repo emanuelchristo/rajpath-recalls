@@ -1,42 +1,45 @@
 <script>
-
+    export let msg
 </script>
 
 <div class="message">
-    <h6>Emanuel Christo</h6>
-    <p>This is a dummy message. Hello world. Water bottle</p>
-    <p class="time">15:39</p>
+    <h6>{ msg.username }</h6>
+    <p>{ msg.body }</p>
+    <p class="time">{ msg.time }</p>
 </div>
 
 <style>
     .message {
-        width: 250px;
         box-sizing: border-box;  
-        border: 1px solid #000;  
+        width: 100%;
         display: flex;
         flex-direction: column;
-        padding: 15px;
+        padding: 13px;
         border-radius: 10px;
-        margin: 5px;
+        background-color: rgba(255, 255, 255, 0.05);
+        margin: 5px 0;
     }
 
     h6 {
         all: unset;
-        font-size: 12px;
-        font-weight: bold;
+        letter-spacing: 0.5px;
+        font-size: 11px;
+        font-weight: 600;
         line-height: 15px;
+        color:rgba(252, 206, 2, 0.9);
     }
 
     p {
         all: unset;
-        font-size: 13px;
+        font-size: 12px;
         padding: 5px 0;
+        color:rgba(255, 255, 255, 0.8);
     }
 
     .time {
         font-size: 10px;
         font-weight: bold;
-        color: #999;
+        color:rgba(255, 255, 255, 0.5);
         padding: 0;
     }
 </style>
