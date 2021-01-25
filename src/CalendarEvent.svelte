@@ -57,10 +57,10 @@
     let evntDate = new Date(event.time)
     let hrs = evntDate.getHours()
     let min = evntDate.getMinutes()
-    if(hrs < 12)
-        time = `${hrs}:${min}am`
-    else if(hrs == 0)
+    if(hrs == 0)
         time = `12:${min}am`
+    else if(hrs < 12)
+        time = `${hrs}:${min}am`
     else if(hrs > 12)
         time = `${hrs-12}:${min}pm`
     else if(hrs == 12)

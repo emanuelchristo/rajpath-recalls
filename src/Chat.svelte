@@ -1,68 +1,185 @@
 <script>
-    import { onMount } from 'svelte'
-    import Message from './Message.svelte'
-    export let viewChatBox
+    import { onMount } from "svelte";
+    import Message from "./Message.svelte";
+    export let messages;
+    export let viewChatBox;
 
-    let messages = [
-        {
-            username: "emanuel.christo",
-            body: "This is a dummy message",
-            time: "3:54 pm"
-        },
-        {
-            username: "bottlecap",
-            body: "This is a dummy message",
-            time: "3:54 pm"
-        },
-        {
-            username: "toothbrush",
-            body: "This is a dummy message",
-            time: "3:54 pm"
-        },
-        {
-            username: "mouse",
-            body: "This is a dummy message",
-            time: "3:54 pm"
-        },
-        {
-            username: "laptop",
-            body: "This is a dummy message",
-            time: "3:54 pm"
-        },
-        {
-            username: "warrior",
-            body: "This is a dummy message",
-            time: "3:54 pm"
-        }
-    ]
+    let closeButton,
+        messagesContainer,
+        bottomButton,
+        usernameInput,
+        sendButton,
+        messageInput;
+    let username = "";
+    let usernamesList = [
+        "Razor",
+        "Ballistic",
+        "Colossus",
+        "Manticore",
+        "Steel",
+        "Hanzo",
+        "Knuckles",
+        "Black_Hawk",
+        "Champ",
+        "Redox",
+        "Zombie",
+        "Virus",
+        "Thrasher",
+        "Archer",
+        "Jorah",
+        "Tyrian",
+        "Garrot",
+        "Orion",
+        "Titanium",
+        "Tweek",
+        "Demise",
+        "Sekhmet",
+        "Xenon",
+        "Amenet",
+        "Caprice",
+        "Comet",
+        "Quistis",
+        "Countess",
+        "Astaroth",
+        "Shieldmaiden",
+        "Hellcat",
+        "Tanit",
+        "Velvet",
+        "Teuta",
+        "Beanie",
+    ];
 
-    let closeButton
-
+    function randomUsername() {
+        return usernamesList[Math.floor(Math.random() * usernamesList.length)];
+    }
     onMount(() => {
-        closeButton.onclick = () => {viewChatBox(false)}
-    })
+        closeButton.onclick = () => {
+            viewChatBox(false);
+        };
+        bottomButton.onclick = () => {
+            scrollToBottom();
+        };
+        sendButton.onclick = () => {
+            process();
+        };
+        usernameInput.onchange = () => {
+            setUsername();
+        };
+        username = randomUsername();
+        usernameInput.placeholder = username;
+        usernameInput.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                usernameInput.blur();
+            }
+        });
+        messageInput.addEventListener("keyup", function (event) {
+            if (event.keyCode === 13) {
+                event.preventDefault();
+                messageInput.blur();
+                sendButton.click();
+            }
+        });
+    });
+
+    const scrollToBottom = () => {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    };
+
+    function setUsername() {
+        let regex = /^[a-zA-Z0-9]+(?:_[A-Za-z0-9]+)*$/;
+        let usrname = usernameInput.value;
+        usrname = trim(usrname);
+        usrname = usrname.split(" ")[0];
+        if (usrname.length >= 5 && usrname.match(regex)) {
+            username = usrname;
+        } else {
+            usernameInput.value = "";
+            username = randomUsername();
+            usernameInput.placeholder = username;
+        }
+    }
+
+    function trim(str) {
+        if (str[0] == " ") {
+            str = str.substr(1, str.length);
+            str = this.trim_f(str);
+        }
+        if (str[str.length - 1] == " ") {
+            str = str.substr(0, str.length - 1);
+            str = this.trim_l(str);
+        }
+        return str;
+    }
+
+    function process() {
+        let msg = messageInput.value;
+        msg = trim(msg);
+        if (msg.length == 0) msg = null;
+        if (
+            msg == null ||
+            msg == undefined ||
+            msg == "" ||
+            msg == " " ||
+            msg == []
+        ) {
+            return;
+        }
+        sendMessage(msg);
+        messageInput.value = ""
+        messageInput.focus();
+    }
+
+    function sendMessage(msg) {
+        let message = {};
+        message["sender"] = username;
+        message["message"] = msg;
+        let d = new Date();
+        message["time"] = d.getTime();
+        firebase.database().ref("Chat/").push(message);
+    }
 </script>
 
 <div class="chat-container">
     <div class="username-container">
         <div>
             <span class="at">@</span>
-            <input id="username-input" type="text" placeholder="Username" value="cris">
+            <input
+                bind:this={usernameInput}
+                id="username-input"
+                type="text"
+                value=""
+            />
         </div>
-        <div bind:this={ closeButton } class="close-icon-wrapper">
-            <img src="icons/x.svg" alt="Close">
+        <div bind:this={closeButton} class="close-icon-wrapper">
+            <img src="icons/x.svg" alt="Close" />
         </div>
     </div>
-    <div class="messages-container">
+    <div bind:this={messagesContainer} class="messages-container">
+        <div bind:this={bottomButton} class="bottom-button">
+            <img src="./icons/arrow-down.svg" alt="D">    
+        </div>
         {#each messages as message}
-            <Message msg={ message } />
+            <Message msg={message} {scrollToBottom} />
         {/each}
     </div>
     <div class="message-input-container">
-        <input id="message-input" type="text" placeholder="Type something...">
-        <div class="send-button-wrapper"><img src="./icons/send.svg" alt="Send"></div>
+        <input
+            bind:this={messageInput}
+            id="message-input"
+            type="text"
+            placeholder="Type something..."
+        />
+        <div bind:this={sendButton} class="send-button-wrapper">
+            <img src="./icons/send.svg" alt="Send" />
+        </div>
     </div>
 </div>
+["Razor", "Ballistic", "Colossus", "Manticore", "Steel", "Hanzo", "Knuckles", "Black_Hawk",
+"Champ", "Redox", "Zombie", "Virus", "Thrasher", "Archer", "Jorah", "Tyrian", "Garrot",
+"Orion", "Titanium", "Tweek", "Demise", "Sekhmet",̦ "Xenon", "Amenet", "Caprice",
+"Comet", "Quistis", "Countess", "Astaroth", "Shieldmaiden", "Hellcat", "Tanit", "Velvet",
+"Teuta", "Beanie"]
 
 <style>
     .chat-container {
@@ -78,6 +195,7 @@
     }
 
     .messages-container {
+        position: relative;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -132,7 +250,7 @@
             rgba(255, 58, 58, 1) 0%,
             rgba(200, 33, 126, 1) 100%
         );
-    }   
+    }
     .send-button-wrapper:active {
         background: rgb(255, 58, 58);
         background: linear-gradient(
@@ -140,7 +258,7 @@
             rgba(255, 58, 58, 1) 0%,
             rgba(200, 33, 126, 1) 100%
         );
-    }   
+    }
 
     img {
         user-select: none;
@@ -182,5 +300,28 @@
         margin-right: 3px;
         font-weight: 300;
         color: rgba(255, 255, 255, 0.8);
+    }
+
+    .bottom-button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+        user-select: none;
+        color: #fff;
+        position: fixed;
+        bottom: 110px;
+        right: 40px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    .bottom-button img {
+        margin-left: 0.25px;
+        margin-bottom: 1px;
+        width: 20px;
+        height: 20px;
     }
 </style>

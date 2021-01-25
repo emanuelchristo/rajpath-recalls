@@ -92,6 +92,10 @@
                 console.log("Users Online : " + onlineUsers);
             });
     };
+    let ref = firebase.database().ref("ActiveUsers/").push({
+        platform: "web-github.io",
+    });
+    ref.onDisconnect().remove();
 
     //player - copy pasted from pre module
 
@@ -258,6 +262,19 @@
             play();
         });
     }
+
+    //Chat
+    let messages = [];
+    firebase
+        .database()
+        .ref("Chat/")
+        .on("value", (sanapshot) => {
+            messages = []
+            sanapshot.forEach((childsnap) => {
+                messages.push(childsnap.val());
+            });
+            messages = messages
+        });
 </script>
 
 <div class="container">
@@ -310,14 +327,14 @@
                     </div>
                 </div>
                 <div class="log-message-container">
-                    <p bind:this={logMessage}></p>
+                    <p bind:this={logMessage} />
                 </div>
             </div>
         </section>
 
         <!-- Chat modal -->
         <div bind:this={chatBox} class="modal-container hide">
-            <Chat {viewChatBox} />
+            <Chat {messages} {viewChatBox} />
         </div>
 
         <!-- Calendar modal -->
