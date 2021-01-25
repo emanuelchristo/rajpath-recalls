@@ -212,12 +212,12 @@
         }
     }
 
-    //is user is playing then boolplay is true
     let pretime;
     let buffering = 0;
     let called = false;
     let boolplay = false;
 
+    // Checking for connection loss
     setInterval(() => {
         if (!boolplay || player == null) {
             return;
@@ -227,7 +227,6 @@
             if (buffering > 2 && !called) {
                 play();
                 play();
-                //Messagebox("Network issue dectected - Leads to lagging","Sync Now","red","orange",0);
                 called = true;
             }
         } else {
@@ -237,8 +236,7 @@
         pretime = player.currentTime;
     }, 100);
 
-    //media session ---------------------------------------------------------------------------------------
-
+    // Media session
     if ("mediaSession" in navigator) {
         navigator.mediaSession.metadata = new MediaMetadata({
             title: "Rajpath Recalls",
