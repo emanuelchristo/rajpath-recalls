@@ -4,7 +4,7 @@
     import Calendar from "./Calendar.svelte";
 
     let chatButton, chatBox, calendarButton, calendar;
-    let tagline;
+    let playButton, playIcon, tagline, logMessage;
     let events = [];
 
     onMount(() => {
@@ -12,12 +12,16 @@
             viewChatBox(true);
         };
         calendarButton.onclick = () => {
-            updateCalendar();
             viewCalendar(true);
         };
 
-        updateCurrentEvent()
-        updateCalendar()
+        playButton.onclick = () => {
+            play();
+        };
+
+        updateCurrentEvent();
+        updateCalendar();
+        getOnlineUsers();
     });
 
     const viewChatBox = (show) => {
@@ -48,35 +52,214 @@
 
     const updateCurrentEvent = () => {
         firebase
-        .database()
-        .ref("CurEvent")
-        .on("value", (val) => {
-            if (val.val() != "unset") 
-                tagline.innerHTML = val.val();
-        });
+            .database()
+            .ref("CurEvent")
+            .on("value", (val) => {
+                if (val.val() != "unset") tagline.innerHTML = val.val();
+            });
+    };
 
-    }
-    
     const updateCalendar = () => {
         firebase
-        .database()
-        .ref("Schedule/")
-        .on("value", (sanapshot) => {
-            let schedule = [];
-            sanapshot.forEach((childsnap) => {
-                schedule.push(childsnap.val());
+            .database()
+            .ref("Schedule/")
+            .on("value", (sanapshot) => {
+                let schedule = [];
+                sanapshot.forEach((childsnap) => {
+                    schedule.push(childsnap.val());
+                });
+                schedule.sort((a, b) => {
+                    return a.time < b.time ? -1 : 1;
+                });
+                let notOverPrograms = [];
+                for (let s of schedule) {
+                    let programOverTime = s.time + parseInt(s.dur) * 60 * 1000;
+                    if (Date.now() < programOverTime) notOverPrograms.push(s);
+                }
+                events = notOverPrograms;
             });
-            schedule.sort((a, b) => { return a.time < b.time ? -1 : 1 });
-            let notOverPrograms = []
-            for(let s of schedule) {
-                let programOverTime = s.time + parseInt(s.dur)*60*1000
-                if(Date.now() < programOverTime)
-                    notOverPrograms.push(s)
-            }
-            events = notOverPrograms
+    };
+
+    const getOnlineUsers = () => {
+        firebase
+            .database()
+            .ref("ActiveUsers/")
+            .on("value", (sanapshot) => {
+                let onlineUsers = 0;
+                sanapshot.forEach((childsnap) => {
+                    onlineUsers++;
+                });
+                console.log("Users Online : " + onlineUsers);
+            });
+    };
+
+    //player - copy pasted from pre module
+
+    let player = null;
+    let oldplayer = null;
+    let lagging = 0;
+    let playerpausedat;
+    let links;
+
+    //Firebase call to links
+
+    firebase
+        .database()
+        .ref("Links/")
+        .on("value", (sanapshot) => {
+            links = sanapshot.val();
+            if (boolplay) sync(true);
         });
+
+    function initplayer() {
+        let srclink = links.mediaLink;
+        let newplayer = new Audio();
+        newplayer.src = srclink;
+        return newplayer;
     }
 
+    function sync(force = false) {
+        if (!comments.canbesynced && !force) return;
+        lagging = 0;
+        oldplayer = player;
+        player = null;
+        play();
+    }
+
+    let loadinganewplayeralready = false;
+
+    function play() {
+        let newplayer = null;
+        if (player == null && !loadinganewplayeralready) {
+            newplayer = initplayer();
+            boolplay = false;
+            loadinganewplayeralready = true;
+        }
+        if (boolplay) {
+            player.pause();
+            playerpausedat = new Date();
+            boolplay = false;
+            playIcon.src = "./icons/play.svg";
+            console.log("Pausing leads to lagging");
+            logMessage.innerText = "Pausing causes lagging";
+        } else {
+            if (lagging == 0) {
+                console.log("Establishing Connection...");
+                logMessage.innerText = "Establising connection";
+            } else {
+                logMessage.innerText = "Network error causes lagging";
+                console.log("Network error leads to lagging...");
+            }
+            if (newplayer != null) {
+                if (newplayer.play() !== undefined) {
+                    newplayer
+                        .play()
+                        .then(() => {
+                            if (oldplayer != null) {
+                                //need to change this piece of code
+                                oldplayer.pause();
+                                oldplayer.src = "";
+                            }
+                            player = newplayer;
+                            boolplay = true;
+                            playIcon.src = "./icons/pause.svg";
+                            console.log("Connected Successfully...");
+                            logMessage.innerText = "Connected successfully";
+                            loadinganewplayeralready = false;
+                            return;
+                        })
+                        .catch((error) => {
+                            if (oldplayer != null) {
+                                //need to change this piece of code
+                                oldplayer.pause();
+                            }
+                            playIcon.src = "./icons/play.svg";
+                            console.log("Network Issues...");
+                            logMessage.innerText = "Network issues";
+                            loadinganewplayeralready = false;
+                            return;
+                        });
+                }
+                return;
+            }
+            if (player.play() !== undefined) {
+                player
+                    .play()
+                    .then(() => {
+                        let temp = new Date();
+                        lagging += (temp - playerpausedat) / 1000;
+                        boolplay = true;
+                        playIcon.src = "./icons/pause.svg";
+                        if (lagging > 0.4) {
+                            console.log(
+                                "Laggin by " +
+                                    Math.floor(lagging * 100) / 100 +
+                                    "s with livestream"
+                            );
+                            logMessage.innerText =
+                                "Laggin by " +
+                                Math.floor(lagging * 100) / 100 +
+                                "s with livestream";
+                        }
+                    })
+                    .catch((error) => {
+                        playIcon.src = "./icons/play.svg";
+                        console.log("Network isuue detected");
+                        logMessage.innerText = "Network issue detected";
+                        return;
+                    });
+            }
+        }
+    }
+
+    //is user is playing then boolplay is true
+    let pretime;
+    let buffering = 0;
+    let called = false;
+    let boolplay = false;
+
+    setInterval(() => {
+        if (!boolplay || player == null) {
+            return;
+        }
+        if (player.currentTime == pretime) {
+            buffering++;
+            if (buffering > 2 && !called) {
+                play();
+                play();
+                //Messagebox("Network issue dectected - Leads to lagging","Sync Now","red","orange",0);
+                called = true;
+            }
+        } else {
+            buffering = 0;
+            called = false;
+        }
+        pretime = player.currentTime;
+    }, 100);
+
+    //media session ---------------------------------------------------------------------------------------
+
+    if ("mediaSession" in navigator) {
+        navigator.mediaSession.metadata = new MediaMetadata({
+            title: "Rajpath Recalls",
+            artist: "Music Cloud",
+            album: "1000+ songs",
+            artwork: [
+                {
+                    src: "./icons/microphone.png",
+                    sizes: "500x500",
+                    type: "image/png",
+                },
+            ],
+        });
+
+        navigator.mediaSession.setActionHandler("play", function () {
+            play();
+        });
+        navigator.mediaSession.setActionHandler("pause", function () {
+            play();
+        });
+    }
 </script>
 
 <div class="container">
@@ -89,16 +272,15 @@
                         <div class="play-ring">
                             <div class="play-ring">
                                 <div class="play-ring">
-                                    <div class="play-button">
+                                    <div
+                                        bind:this={playButton}
+                                        class="play-button"
+                                    >
                                         <img
-                                            id="play-icon"
+                                            bind:this={playIcon}
                                             alt="Play"
                                             src="icons/play.svg"
-                                        />
-                                        <img
-                                            id="pause-icon"
-                                            alt="Pause"
-                                            src="icons/pause.svg"
+                                            class="play-icon"
                                         />
                                     </div>
                                 </div>
@@ -128,6 +310,9 @@
                         />
                         <div id="new-message-icon" />
                     </div>
+                </div>
+                <div class="log-message-container">
+                    <p bind:this={logMessage}></p>
                 </div>
             </div>
         </section>
@@ -333,19 +518,13 @@
         box-shadow: 2px 3px 20px rgba(95, 6, 51, 0.26);
     }
 
-    #play-icon,
-    #pause-icon {
+    .play-icon {
         user-select: none;
-        margin-left: 3px;
+        margin-left: 1px;
         width: 30px;
         height: 30px;
         opacity: 0.7;
         display: block;
-    }
-
-    #pause-icon {
-        margin: 0;
-        display: none;
     }
 
     .play-button {
@@ -497,5 +676,13 @@
         background-color: rgba(19, 13, 31, 0.795);
         backdrop-filter: blur(12px);
         box-shadow: 2px 2px 25px rgba(3, 4, 19, 0.534);
+    }
+
+    .log-message-container {
+        letter-spacing: 0.5px;
+        margin-top: 30px;
+        font-size: 10px;
+        font-weight: 300;
+        color: rgba(255, 255, 255, 0.3);
     }
 </style>
