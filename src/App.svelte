@@ -3,11 +3,8 @@
     import Chat from "./Chat.svelte";
     import Calendar from './Calendar.svelte'
 
-    let chatButton
-    let chatBox
-    let calendarButton
-    let calendar
-    
+    let chatButton, chatBox, calendarButton, calendar
+
     onMount(() => {
         chatButton.onclick = () => {viewChatBox(true)}
         calendarButton.onclick = () => {viewCalendar(true)}
@@ -44,8 +41,8 @@
                             <div class="play-ring">
                                 <div class="play-ring">
                                     <div class="play-button">
-                                        <img id="play-icon" src="icons/play.svg">
-                                        <img id="pause-icon" src="icons/pause.svg">
+                                        <img id="play-icon" alt="Play" src="icons/play.svg">
+                                        <img id="pause-icon" alt="Pause" src="icons/pause.svg">
                                     </div>
                                 </div>
                             </div>
@@ -67,10 +64,12 @@
             </div>
         </section>
 
+        <!-- Chat modal -->
         <div bind:this={chatBox} class="modal-container hide">
             <Chat viewChatBox={ viewChatBox } />
         </div>
 
+        <!-- Calendar modal -->
         <div bind:this={calendar} class="modal-container hide">
             <Calendar viewCalendar={ viewCalendar }/>
         </div>
@@ -191,6 +190,7 @@
             rgb(255, 255, 255) 0%,
             rgb(184, 184, 184) 100%
         );
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 28px;
@@ -204,6 +204,7 @@
             rgb(250, 50, 50) 0%,
             rgb(209, 16, 122) 100%
         );
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
