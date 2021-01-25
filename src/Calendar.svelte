@@ -1,12 +1,16 @@
 <script>
-    import { onMount } from 'svelte'
-    export let viewCalendar
+    import { onMount } from "svelte";
+    import CalendarEvent from "./CalendarEvent.svelte";
+    export let viewCalendar;
+    export let events;
 
-    let closeButton
+    let closeButton, noEvents;
 
     onMount(() => {
-        closeButton.onclick = () => {viewCalendar(false)}
-    })
+        closeButton.onclick = () => {
+            viewCalendar(false);
+        };
+    });
 </script>
 
 <div class="chat-container">
@@ -14,12 +18,20 @@
         <div>
             <span class="schedule">Schedule</span>
         </div>
-        <div bind:this={ closeButton } class="close-icon-wrapper">
-            <img src="icons/x.svg" alt="Close">
+        <div bind:this={closeButton} class="close-icon-wrapper">
+            <img src="icons/x.svg" alt="Close" />
         </div>
     </div>
     <div class="events-container">
-    
+        {#if !events.length}
+            <div bind:this={noEvents} class="no-events-container">
+                <p>No scheduled events</p>
+            </div>
+        {:else}
+            {#each events as e}
+                <CalendarEvent event={e} />
+            {/each}
+        {/if}
     </div>
 </div>
 
@@ -68,5 +80,19 @@
         font-weight: 600;
         letter-spacing: 0.5px;
         color: rgba(255, 255, 255, 0.8);
+    }
+
+    .no-events-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .no-events-container p {
+        letter-spacing: 0.5px;
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.4);
     }
 </style>

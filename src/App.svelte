@@ -1,31 +1,80 @@
 <script>
-    import { onMount } from "svelte"
+    import { onMount } from "svelte";
     import Chat from "./Chat.svelte";
-    import Calendar from './Calendar.svelte'
+    import Calendar from "./Calendar.svelte";
 
-    let chatButton, chatBox, calendarButton, calendar
+    let chatButton, chatBox, calendarButton, calendar;
+    let tagline;
+    let events = [];
 
     onMount(() => {
-        chatButton.onclick = () => {viewChatBox(true)}
-        calendarButton.onclick = () => {viewCalendar(true)}
-    })
+        chatButton.onclick = () => {
+            viewChatBox(true);
+        };
+        calendarButton.onclick = () => {
+            updateCalendar();
+            viewCalendar(true);
+        };
+
+        updateCurrentEvent()
+        updateCalendar()
+    });
 
     const viewChatBox = (show) => {
-        if(show)
-            chatBox.style.display = "block"
-        else
-            chatBox.style.display = "none"
-
-        console.log(show)
-    }
+        if (show) chatBox.style.display = "block";
+        else chatBox.style.display = "none";
+    };
 
     const viewCalendar = (show) => {
-        if(show)
-            calendar.style.display = "block"
-        else
-            calendar.style.display = "none"
+        if (show) calendar.style.display = "block";
+        else calendar.style.display = "none";
+    };
 
-        console.log(show)
+    //Firebase Config
+    let firebaseConfig = {
+        apiKey: "AIzaSyABNQF9ZiZTzmzYYZp9y0U1zmHmxThOseE",
+        authDomain: "rajpathrecalls-15944.firebaseapp.com",
+        databaseURL: "https://rajpathrecalls-15944.firebaseio.com",
+        projectId: "rajpathrecalls-15944",
+        storageBucket: "rajpathrecalls-15944.appspot.com",
+        messagingSenderId: "912134912883",
+        appId: "1:912134912883:web:d98ff319fabadb46a3a306",
+        measurementId: "G-0LS86C0FPG",
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+
+    const updateCurrentEvent = () => {
+        firebase
+        .database()
+        .ref("CurEvent")
+        .on("value", (val) => {
+            if (val.val() != "unset") 
+                tagline.innerHTML = val.val();
+        });
+
+    }
+    
+    const updateCalendar = () => {
+        firebase
+        .database()
+        .ref("Schedule/")
+        .on("value", (sanapshot) => {
+            let schedule = [];
+            sanapshot.forEach((childsnap) => {
+                schedule.push(childsnap.val());
+            });
+            schedule.sort((a, b) => { return a.time < b.time ? -1 : 1 });
+            let notOverPrograms = []
+            for(let s of schedule) {
+                let programOverTime = s.time + parseInt(s.dur)*60*1000
+                if(Date.now() < programOverTime)
+                    notOverPrograms.push(s)
+            }
+            events = notOverPrograms
+        });
     }
 
 </script>
@@ -41,24 +90,43 @@
                             <div class="play-ring">
                                 <div class="play-ring">
                                     <div class="play-button">
-                                        <img id="play-icon" alt="Play" src="icons/play.svg">
-                                        <img id="pause-icon" alt="Pause" src="icons/pause.svg">
+                                        <img
+                                            id="play-icon"
+                                            alt="Play"
+                                            src="icons/play.svg"
+                                        />
+                                        <img
+                                            id="pause-icon"
+                                            alt="Pause"
+                                            src="icons/pause.svg"
+                                        />
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <p id="tagline">
+                <p bind:this={tagline} id="tagline">
                     <span id="musiccloud">MusicCloud</span> 1000+ Songs
                 </p>
                 <div class="controls-container">
-                    <div bind:this={calendarButton} class="control-icon-wrapper">
-                        <img class="control-icon" src="icons/calendar.svg" alt="Calendar">
+                    <div
+                        bind:this={calendarButton}
+                        class="control-icon-wrapper"
+                    >
+                        <img
+                            class="control-icon"
+                            src="icons/calendar.svg"
+                            alt="Calendar"
+                        />
                     </div>
                     <div bind:this={chatButton} class="control-icon-wrapper">
-                        <img class="control-icon" src="icons/message-circle.svg" alt="Chat">
-                        <div id="new-message-icon"></div>
+                        <img
+                            class="control-icon"
+                            src="icons/message-circle.svg"
+                            alt="Chat"
+                        />
+                        <div id="new-message-icon" />
                     </div>
                 </div>
             </div>
@@ -66,12 +134,12 @@
 
         <!-- Chat modal -->
         <div bind:this={chatBox} class="modal-container hide">
-            <Chat viewChatBox={ viewChatBox } />
+            <Chat {viewChatBox} />
         </div>
 
         <!-- Calendar modal -->
         <div bind:this={calendar} class="modal-container hide">
-            <Calendar viewCalendar={ viewCalendar }/>
+            <Calendar {viewCalendar} {events} />
         </div>
 
         <section id="section">
@@ -130,27 +198,53 @@
                     feedback. Feel free to contact us
                 </p>
                 <p>
-                    <a href="mailto:rajapathrecalls@gmail.com">rajapathrecalls@gmail.com</a>
+                    <a href="mailto:rajapathrecalls@gmail.com"
+                        >rajapathrecalls@gmail.com</a
+                    >
                 </p>
                 <div class="social-icons-container">
-                    <a href="https://www.facebook.com/rajpath.recalls" target="__blank">
+                    <a
+                        href="https://www.facebook.com/rajpath.recalls"
+                        target="__blank">
                         <div class="social-icon-wrapper">
-                            <img class="social-icon" src="icons/facebook.svg" alt="Facebook">
+                            <img
+                                class="social-icon"
+                                src="icons/facebook.svg"
+                                alt="Facebook"
+                            />
                         </div>
                     </a>
-                    <a href="https://in.linkedin.com/in/rajpath-recalls-radio-976757200" target="__blank">
+                    <a
+                        href="https://in.linkedin.com/in/rajpath-recalls-radio-976757200"
+                        target="__blank">
                         <div class="social-icon-wrapper">
-                            <img class="social-icon" src="icons/linkedin.svg" alt="LinkedIn">
+                            <img
+                                class="social-icon"
+                                src="icons/linkedin.svg"
+                                alt="LinkedIn"
+                            />
                         </div>
                     </a>
-                    <a href="https://github.com/rajpathrecalls" target="__blank">
+                    <a
+                        href="https://github.com/rajpathrecalls"
+                        target="__blank">
                         <div class="social-icon-wrapper">
-                            <img class="social-icon" src="icons/github.svg" alt="GitHub">
+                            <img
+                                class="social-icon"
+                                src="icons/github.svg"
+                                alt="GitHub"
+                            />
                         </div>
                     </a>
-                    <a href="https://www.instagram.com/rajpath.recalls_nitc/" target="__blank">
+                    <a
+                        href="https://www.instagram.com/rajpath.recalls_nitc/"
+                        target="__blank">
                         <div class="social-icon-wrapper">
-                            <img class="social-icon" src="icons/instagram.svg" alt="Instagram">
+                            <img
+                                class="social-icon"
+                                src="icons/instagram.svg"
+                                alt="Instagram"
+                            />
                         </div>
                     </a>
                 </div>
@@ -239,7 +333,8 @@
         box-shadow: 2px 3px 20px rgba(95, 6, 51, 0.26);
     }
 
-    #play-icon, #pause-icon {
+    #play-icon,
+    #pause-icon {
         user-select: none;
         margin-left: 3px;
         width: 30px;
@@ -297,7 +392,8 @@
         justify-content: space-evenly;
     }
 
-    .control-icon-wrapper, .social-icon-wrapper {
+    .control-icon-wrapper,
+    .social-icon-wrapper {
         position: relative;
         background-color: rgba(255, 255, 255, 0.1);
         display: flex;
@@ -310,11 +406,13 @@
         transition: 0.1s ease all;
     }
 
-    .control-icon-wrapper:hover, .social-icon-wrapper:hover {
+    .control-icon-wrapper:hover,
+    .social-icon-wrapper:hover {
         background-color: rgba(255, 255, 255, 0.05);
     }
 
-    .control-icon-wrapper:active, .social-icon-wrapper:active {
+    .control-icon-wrapper:active,
+    .social-icon-wrapper:active {
         background-color: rgba(255, 255, 255, 0.1);
     }
 
@@ -325,7 +423,8 @@
         height: 45px;
     }
 
-    .control-icon, .social-icon {
+    .control-icon,
+    .social-icon {
         user-select: none;
         opacity: 0.8;
         width: 30px;
