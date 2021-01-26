@@ -3,6 +3,9 @@
     import Message from "./Message.svelte";
     export let messages;
     export let viewChatBox;
+    export function scrlBtm() {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    };
 
     let closeButton,
         messagesContainer,
@@ -175,11 +178,7 @@
         </div>
     </div>
 </div>
-["Razor", "Ballistic", "Colossus", "Manticore", "Steel", "Hanzo", "Knuckles", "Black_Hawk",
-"Champ", "Redox", "Zombie", "Virus", "Thrasher", "Archer", "Jorah", "Tyrian", "Garrot",
-"Orion", "Titanium", "Tweek", "Demise", "Sekhmet",̦ "Xenon", "Amenet", "Caprice",
-"Comet", "Quistis", "Countess", "Astaroth", "Shieldmaiden", "Hellcat", "Tanit", "Velvet",
-"Teuta", "Beanie"]
+
 
 <style>
     .chat-container {

@@ -3,13 +3,16 @@
     import Chat from "./Chat.svelte";
     import Calendar from "./Calendar.svelte";
 
-    let chatButton, chatBox, calendarButton, calendar;
+    let chat, chatButton, chatBox, newMsgIcon
+    let chatOpen = false
+    let calendarButton, calendar;
     let playButton, playIcon, tagline, logMessage;
     let events = [];
 
     onMount(() => {
         chatButton.onclick = () => {
             viewChatBox(true);
+            chat.scrlBtm()
         };
         calendarButton.onclick = () => {
             viewCalendar(true);
@@ -25,9 +28,17 @@
     });
 
     const viewChatBox = (show) => {
-        if (show) chatBox.style.display = "block";
-        else chatBox.style.display = "none";
+        if (show) {
+            chatBox.style.display = "block";
+            chatOpen = true
+        }
+        else {
+            chatBox.style.display = "none";
+            chatOpen = false
+            newMsgIcon.style.display = "none"
+        }
     };
+
 
     const viewCalendar = (show) => {
         if (show) calendar.style.display = "block";
@@ -274,6 +285,8 @@
                 messages.push(childsnap.val());
             });
             messages = messages
+            if(!chatOpen)
+                newMsgIcon.style.display = "block"
         });
 </script>
 
@@ -323,7 +336,7 @@
                             src="icons/message-circle.svg"
                             alt="Chat"
                         />
-                        <div id="new-message-icon" />
+                        <div bind:this={newMsgIcon} id="new-message-icon" />
                     </div>
                 </div>
                 <div class="log-message-container">
@@ -334,7 +347,7 @@
 
         <!-- Chat modal -->
         <div bind:this={chatBox} class="modal-container hide">
-            <Chat {messages} {viewChatBox} />
+            <Chat bind:this={chat} {messages} {viewChatBox} />
         </div>
 
         <!-- Calendar modal -->
