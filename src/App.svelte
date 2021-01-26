@@ -3,16 +3,17 @@
     import Chat from "./Chat.svelte";
     import Calendar from "./Calendar.svelte";
 
-    let chat, chatButton, chatBox, newMsgIcon
-    let chatOpen = false
+    let chat, chatButton, chatBox, newMsgIcon;
+    let chatOpen = false;
     let calendarButton, calendar;
-    let playButton, playIcon, tagline, logMessage;
+    let playButton, playIcon, syncButton, tagline, logMessage;
+    let onlineUsersEle
     let events = [];
 
     onMount(() => {
         chatButton.onclick = () => {
             viewChatBox(true);
-            chat.scrlBtm()
+            chat.scrlBtm();
         };
         calendarButton.onclick = () => {
             viewCalendar(true);
@@ -22,6 +23,10 @@
             play();
         };
 
+        syncButton.onclick = () => {
+            sync(true);
+        };
+        syncButton.style.display = "none";
         updateCurrentEvent();
         updateCalendar();
         getOnlineUsers();
@@ -30,15 +35,13 @@
     const viewChatBox = (show) => {
         if (show) {
             chatBox.style.display = "block";
-            chatOpen = true
-        }
-        else {
+            chatOpen = true;
+        } else {
             chatBox.style.display = "none";
-            chatOpen = false
-            newMsgIcon.style.display = "none"
+            chatOpen = false;
+            newMsgIcon.style.display = "none";
         }
     };
-
 
     const viewCalendar = (show) => {
         if (show) calendar.style.display = "block";
@@ -100,7 +103,7 @@
                 sanapshot.forEach((childsnap) => {
                     onlineUsers++;
                 });
-                console.log("Users Online : " + onlineUsers);
+                onlineUsersEle.innerHTML = `Users online ${onlineUsers}`
             });
     };
     let ref = firebase.database().ref("ActiveUsers/").push({
@@ -108,8 +111,7 @@
     });
     ref.onDisconnect().remove();
 
-    //player - copy pasted from pre module
-
+    //Player
     let player = null;
     let oldplayer = null;
     let lagging = 0;
@@ -134,7 +136,7 @@
     }
 
     function sync(force = false) {
-        if (!comments.canbesynced && !force) return;
+        if (!force) return;
         lagging = 0;
         oldplayer = player;
         player = null;
@@ -221,6 +223,12 @@
     let called = false;
     let boolplay = false;
 
+    $: {
+        if (syncButton) {
+            if (boolplay) syncButton.style.display = "flex";
+            else syncButton.style.display = "none";
+        }
+    }
     // Checking for connection loss
     setInterval(() => {
         if (!boolplay || player == null) {
@@ -269,13 +277,12 @@
         .database()
         .ref("Chat/")
         .on("value", (sanapshot) => {
-            messages = []
+            messages = [];
             sanapshot.forEach((childsnap) => {
                 messages.push(childsnap.val());
             });
-            messages = messages
-            if(!chatOpen)
-                newMsgIcon.style.display = "block"
+            messages = messages;
+            if (!chatOpen) newMsgIcon.style.display = "block";
         });
 </script>
 
@@ -317,6 +324,13 @@
                             class="control-icon"
                             src="icons/calendar.svg"
                             alt="Calendar"
+                        />
+                    </div>
+                    <div bind:this={syncButton} class="control-icon-wrapper">
+                        <img
+                            class="control-icon"
+                            src="icons/refresh-cw.svg"
+                            alt="Sync"
                         />
                     </div>
                     <div bind:this={chatButton} class="control-icon-wrapper">
@@ -385,9 +399,11 @@
                     A radio without its listeners is like food without salt and
                     spices. We would love to be able to connect with all of our
                     listeners and help improve your experience. Here you will
-                    find a google form where you can make song requests, song
-                    dedications for Serenade, share stories for our Chai Un-Cut
-                    or give topics to be discussed in Unfiltered.
+                    find a <a href="https://forms.gle/ZnMw9rX1yKfxeNBS6"
+                        >google form</a
+                    > where you can make song requests, song dedications for Serenade,
+                    share stories for our Chai Un-Cut or give topics to be discussed
+                    in Unfiltered.
                 </p>
             </div>
         </section>
@@ -450,6 +466,9 @@
                         </div>
                     </a>
                 </div>
+            </div>
+            <div class="online-users-wrapper">
+                <p bind:this={onlineUsersEle}></p>
             </div>
         </section>
     </main>
@@ -663,13 +682,18 @@
     #section p {
         line-height: 20px;
         font-weight: 100;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
         line-height: 20px;
-        font-size: 14px;
+        font-size: 13px;
     }
 
     #section ul {
         text-align: left;
+        line-height: 20px;
+        font-weight: 100;
+        letter-spacing: 0.5px;
+        line-height: 20px;
+        font-size: 13px;
     }
 
     a {
@@ -701,5 +725,14 @@
         font-size: 10px;
         font-weight: 300;
         color: rgba(255, 255, 255, 0.3);
+    }
+
+    .online-users-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 9px;
+        color: rgba(255, 255, 255, 0.2);
+        margin-top: 40px;
     }
 </style>
