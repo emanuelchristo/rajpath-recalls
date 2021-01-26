@@ -4,6 +4,7 @@
     import Calendar from "./Calendar.svelte";
 
     let chat, chatButton, chatBox, newMsgIcon;
+    let showSync = false
     let chatOpen = false;
     let calendarButton, calendar;
     let playButton, playIcon, syncButton, tagline, logMessage;
@@ -157,10 +158,12 @@
             playerpausedat = new Date();
             boolplay = false;
             playIcon.src = "./icons/play.svg";
+            showSync = false
             logMessage.innerText = "Pausing causes lagging";
         } else {
+            showSync = false
             if (lagging == 0) {
-                logMessage.innerText = "Establising connection";
+                logMessage.innerText = "Establishing connection";
             } else {
                 logMessage.innerText = "Network error causes lagging";
             }
@@ -177,6 +180,7 @@
                             player = newplayer;
                             boolplay = true;
                             playIcon.src = "./icons/pause.svg";
+                            showSync = false
                             logMessage.innerText = "Connected successfully";
                             loadinganewplayeralready = false;
                             return;
@@ -187,6 +191,7 @@
                                 oldplayer.pause();
                             }
                             playIcon.src = "./icons/play.svg";
+                            showSync = false
                             logMessage.innerText = "Network issues";
                             loadinganewplayeralready = false;
                             return;
@@ -204,9 +209,10 @@
                         playIcon.src = "./icons/pause.svg";
                         if (lagging > 0.4) {
                             logMessage.innerText =
-                                "Laggin by " +
+                                "Lagging by " +
                                 Math.floor(lagging * 100) / 100 +
                                 "s with livestream";
+                            showSync = true
                         }
                     })
                     .catch((error) => {
@@ -225,7 +231,7 @@
 
     $: {
         if (syncButton) {
-            if (boolplay) syncButton.style.display = "flex";
+            if (showSync) syncButton.style.display = "flex";
             else syncButton.style.display = "none";
         }
     }
