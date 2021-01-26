@@ -155,15 +155,12 @@
             playerpausedat = new Date();
             boolplay = false;
             playIcon.src = "./icons/play.svg";
-            console.log("Pausing leads to lagging");
             logMessage.innerText = "Pausing causes lagging";
         } else {
             if (lagging == 0) {
-                console.log("Establishing Connection...");
                 logMessage.innerText = "Establising connection";
             } else {
                 logMessage.innerText = "Network error causes lagging";
-                console.log("Network error leads to lagging...");
             }
             if (newplayer != null) {
                 if (newplayer.play() !== undefined) {
@@ -178,7 +175,6 @@
                             player = newplayer;
                             boolplay = true;
                             playIcon.src = "./icons/pause.svg";
-                            console.log("Connected Successfully...");
                             logMessage.innerText = "Connected successfully";
                             loadinganewplayeralready = false;
                             return;
@@ -189,7 +185,6 @@
                                 oldplayer.pause();
                             }
                             playIcon.src = "./icons/play.svg";
-                            console.log("Network Issues...");
                             logMessage.innerText = "Network issues";
                             loadinganewplayeralready = false;
                             return;
@@ -206,11 +201,6 @@
                         boolplay = true;
                         playIcon.src = "./icons/pause.svg";
                         if (lagging > 0.4) {
-                            console.log(
-                                "Laggin by " +
-                                    Math.floor(lagging * 100) / 100 +
-                                    "s with livestream"
-                            );
                             logMessage.innerText =
                                 "Laggin by " +
                                 Math.floor(lagging * 100) / 100 +
@@ -219,7 +209,6 @@
                     })
                     .catch((error) => {
                         playIcon.src = "./icons/play.svg";
-                        console.log("Network isuue detected");
                         logMessage.innerText = "Network issue detected";
                         return;
                     });
@@ -259,9 +248,9 @@
             album: "1000+ songs",
             artwork: [
                 {
-                    src: "./icons/microphone.png",
-                    sizes: "500x500",
-                    type: "image/png",
+                    src: "./cover.jpg",
+                    sizes: "640x640",
+                    type: "image/jpg",
                 },
             ],
         });
