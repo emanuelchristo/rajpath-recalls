@@ -30,7 +30,6 @@
         syncButton.style.display = "none";
         updateCurrentEvent();
         updateCalendar();
-        getOnlineUsers();
     });
 
     const viewChatBox = (show) => {
@@ -95,18 +94,6 @@
             });
     };
 
-    const getOnlineUsers = () => {
-        firebase
-            .database()
-            .ref("ActiveUsers/")
-            .on("value", (sanapshot) => {
-                let onlineUsers = 0;
-                sanapshot.forEach((childsnap) => {
-                    onlineUsers++;
-                });
-                onlineUsersEle.innerHTML = `Users online ${onlineUsers}`
-            });
-    };
     let ref = firebase.database().ref("ActiveUsers/").push({
         platform: "web-github.io",
     });
@@ -473,9 +460,6 @@
                     </a>
                 </div>
             </div>
-            <div class="online-users-wrapper">
-                <p bind:this={onlineUsersEle}></p>
-            </div>
         </section>
     </main>
 </div>
@@ -731,14 +715,5 @@
         font-size: 10px;
         font-weight: 300;
         color: rgba(255, 255, 255, 0.3);
-    }
-
-    .online-users-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 9px;
-        color: rgba(255, 255, 255, 0.2);
-        margin-top: 40px;
     }
 </style>

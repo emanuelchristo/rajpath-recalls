@@ -12,7 +12,8 @@
         bottomButton,
         usernameInput,
         sendButton,
-        messageInput;
+        messageInput,
+        onlineUserCount;
     let username = "";
     let usernamesList = [
         "Razor",
@@ -145,6 +146,17 @@
         message["time"] = d.getTime();
         firebase.database().ref("Chat/").push(message);
     }
+
+    firebase
+            .database()
+            .ref("ActiveUsers/")
+            .on("value", (sanapshot) => {
+                let onlineUsers = 0;
+                sanapshot.forEach((childsnap) => {
+                    onlineUsers++;
+                });
+                onlineUserCount.innerHTML = `${onlineUsers} online`
+            });
 </script>
 
 <div class="chat-container">
@@ -158,8 +170,11 @@
                 value=""
             />
         </div>
-        <div bind:this={closeButton} class="close-icon-wrapper">
-            <img src="icons/x.svg" alt="Close" />
+        <div>
+            <p class="online-users-count" bind:this={onlineUserCount}></p>
+            <div bind:this={closeButton} class="close-icon-wrapper">
+                <img src="icons/x.svg" alt="Close" />
+            </div>
         </div>
     </div>
     <div bind:this={messagesContainer} class="messages-container">
@@ -303,6 +318,19 @@
         margin-right: 3px;
         font-weight: 300;
         color: rgba(255, 255, 255, 0.8);
+    }
+
+    .username-container div {
+        display: flex;
+        align-items: center;
+    }
+
+    .online-users-count {
+        all: unset;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.5);
+        margin-right: 15px;
+        margin-top: 4px;
     }
 
     .bottom-button {
