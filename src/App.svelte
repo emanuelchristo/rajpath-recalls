@@ -92,14 +92,14 @@
         wrap: {
             id: "slidy",
             width: "100%",
-            height: "300px",
+            height: "350px",
             padding: "0",
             align: "middle",
             alignmargin: 0,
         },
         slide: {
             gap: 20,
-            width: "70vw",
+            width: "100%",
             height: "max-content",
             backimg: false,
             imgsrckey: "src",
