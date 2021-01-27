@@ -1,15 +1,128 @@
 <script>
     import { onMount } from "svelte";
+    import Slidy from "svelte-slidy";
     import Chat from "./Chat.svelte";
     import Calendar from "./Calendar.svelte";
 
     let chat, chatButton, chatBox, newMsgIcon;
-    let showSync = false
+    let showSync = false;
     let chatOpen = false;
     let calendarButton, calendar;
     let playButton, playIcon, syncButton, tagline, logMessage;
-    let onlineUsersEle
-    let events = [];
+    let onlineUsersEle;
+    let scheduleEvents = [];
+
+    const events = [
+        {
+            id: 1,
+            src: "./images/event_1.jpg",
+            header: "The Not So Funny Show",
+            text:
+                "A show for the ones who crave for a daily dosage of laughter is right here. If you have a gloomy day, fret not, as this show is a concoction of carefully curated episodes to lighten you up.",
+        },
+        {
+            id: 2,
+            src: "./images/event_1.jpg",
+            header: "Unfiltered",
+            text:
+                "The world is filled with commotion and uncertainty, and in the midst of that, there are different opinions that often go unheard. This is where we come together and share views on topics within our own campus and beyond.",
+        },
+        {
+            id: 3,
+            src: "./images/event_1.jpg",
+            header: "Chai Un-Cut",
+            text:
+                "A campus that has begun its journey more than six decades ago, along with its transition from REC to NITC, it surely has a rich history. Hop right in to reminisce memories of our campus through the art of storytelling.",
+        },
+        {
+            id: 4,
+            src: "./images/event_1.jpg",
+            header: "Center Circle Scoop",
+            text:
+                "Change is constant on our campus, and we often tend to get lost in the ever-changing dynamics. Fear not, as Center Circle Scoop is there to update you.",
+        },
+        {
+            id: 5,
+            src: "./images/event_1.jpg",
+            header: "RECalling",
+            text:
+                "Campus life can often be filled with indecisiveness, constant failures, and anxiety. Sometimes all we need are words of assurance from the ones who’ve been through it all. We present RECalling, a one on one session with an alumnus every fortnight.",
+        },
+        {
+            id: 6,
+            src: "./images/event_1.jpg",
+            header: "Weekly Checklist",
+            text:
+                "Constant assignments, tests, and quizzes has become a routine for us. In the midst of that, we wish for a checklist of the week. Tune in to know the latest trends, places, and binge-worthy shows.",
+        },
+        {
+            id: 7,
+            src: "./images/event_1.jpg",
+            header: "Serenade",
+            text:
+                "Want to dedicate a song for someone special (anonymously, of course) or want everyone to discover a song you love. This is your space.",
+        },
+        {
+            id: 8,
+            src: "./images/event_1.jpg",
+            header: "Voice",
+            text:
+                "NITC is a pool of incredibly talented artists. This is an event where we play original/covers sent in by the students. Jump right in to seize the stage.",
+        },
+        {
+            id: 9,
+            src: "./images/event_1.jpg",
+            header: "Music Cloud",
+            text:
+                "Wanna discover new songs and escape from the songs that you’ve played numerous times. Tune in to a Handpicked sound cloud and listen to the latest hits and diverse selections.",
+        },
+    ];
+
+    // const events = [
+    //     {id: 1, src: "./images/event_1.jpg", header: "Music Cloud", text: "This is some description"},
+    //     {id: 1, src: "./images/event_1.jpg", header: "Serenade", text: "This is some description"},
+    //     {id: 1, src: "./images/event_1.jpg", header: "Weekly Checklist", text: "This is some description"},
+    //     {id: 1, src: "./images/event_1.jpg", header: "Unfiltered", text: "This is some description"},
+    // ]
+
+    let name = "Slidy";
+
+    const slidy = {
+        slides: events,
+        wrap: {
+            id: "slidy",
+            width: "100%",
+            height: "300px",
+            padding: "0",
+            align: "middle",
+            alignmargin: 0,
+        },
+        slide: {
+            gap: 20,
+            width: "70vw",
+            height: "max-content",
+            backimg: false,
+            imgsrckey: "src",
+            objectfit: "cover",
+            overflow: "hidden",
+        },
+        controls: {
+            dots: true,
+            dotsnum: false,
+            dotsarrow: false,
+            dotspure: true,
+            arrows: false,
+            keys: false,
+            drag: true,
+            wheel: true,
+        },
+        options: {
+            axis: "x",
+            loop: true,
+            duration: 350,
+        },
+    };
+    let index = 4;
 
     onMount(() => {
         chatButton.onclick = () => {
@@ -90,7 +203,7 @@
                     let programOverTime = s.time + parseInt(s.dur) * 60 * 1000;
                     if (Date.now() < programOverTime) notOverPrograms.push(s);
                 }
-                events = notOverPrograms;
+                scheduleEvents = notOverPrograms;
             });
     };
 
@@ -145,10 +258,10 @@
             playerpausedat = new Date();
             boolplay = false;
             playIcon.src = "./icons/play.svg";
-            showSync = false
+            showSync = false;
             logMessage.innerText = "Pausing causes lagging";
         } else {
-            showSync = false
+            showSync = false;
             if (lagging == 0) {
                 logMessage.innerText = "Establishing connection";
             } else {
@@ -167,7 +280,7 @@
                             player = newplayer;
                             boolplay = true;
                             playIcon.src = "./icons/pause.svg";
-                            showSync = false
+                            showSync = false;
                             logMessage.innerText = "Connected successfully";
                             loadinganewplayeralready = false;
                             return;
@@ -178,7 +291,7 @@
                                 oldplayer.pause();
                             }
                             playIcon.src = "./icons/play.svg";
-                            showSync = false
+                            showSync = false;
                             logMessage.innerText = "Network issues";
                             loadinganewplayeralready = false;
                             return;
@@ -199,7 +312,7 @@
                                 "Lagging by " +
                                 Math.floor(lagging * 100) / 100 +
                                 "s with livestream";
-                            showSync = true
+                            showSync = true;
                         }
                     })
                     .catch((error) => {
@@ -348,8 +461,26 @@
 
         <!-- Calendar modal -->
         <div bind:this={calendar} class="modal-container hide">
-            <Calendar {viewCalendar} {events} />
+            <Calendar {viewCalendar} events={scheduleEvents} />
         </div>
+
+        <section id="section">
+            <div class="section-content-container">
+                <div class="slidy-wrapper">
+                    <Slidy {...slidy} bind:index let:item>
+                        <div class="slide">
+                            <!-- wrapper for new skin -->
+                            <article>
+                                <h2>{item.header}</h2>
+                                <p>
+                                    {item.text}
+                                </p>
+                            </article>
+                        </div>
+                    </Slidy>
+                </div>
+            </div>
+        </section>
 
         <section id="section">
             <div class="section-content-container">
@@ -368,20 +499,6 @@
                     <li>Ad-free</li>
                     <li>Responsive to all devices</li>
                 </ul>
-            </div>
-        </section>
-
-        <section id="section">
-            <div class="section-content-container">
-                <h2>Events</h2>
-                <p>
-                    A radio without its listeners is like food without salt and
-                    spices. We would love to be able to connect with all of our
-                    listeners and help improve your experience. Here you will
-                    find a google form where you can make song requests, song
-                    dedications for Serenade, share stories for our Chai Un-Cut
-                    or give topics to be discussed in Unfiltered.
-                </p>
             </div>
         </section>
 
@@ -416,7 +533,8 @@
                 <div class="social-icons-container">
                     <a
                         href="https://www.facebook.com/rajpath.recalls"
-                        target="__blank">
+                        target="__blank"
+                    >
                         <div class="social-icon-wrapper">
                             <img
                                 class="social-icon"
@@ -427,7 +545,8 @@
                     </a>
                     <a
                         href="https://in.linkedin.com/in/rajpath-recalls-radio-976757200"
-                        target="__blank">
+                        target="__blank"
+                    >
                         <div class="social-icon-wrapper">
                             <img
                                 class="social-icon"
@@ -438,7 +557,8 @@
                     </a>
                     <a
                         href="https://github.com/rajpathrecalls"
-                        target="__blank">
+                        target="__blank"
+                    >
                         <div class="social-icon-wrapper">
                             <img
                                 class="social-icon"
@@ -449,7 +569,8 @@
                     </a>
                     <a
                         href="https://www.instagram.com/rajpath.recalls_nitc/"
-                        target="__blank">
+                        target="__blank"
+                    >
                         <div class="social-icon-wrapper">
                             <img
                                 class="social-icon"
@@ -715,5 +836,34 @@
         font-size: 10px;
         font-weight: 300;
         color: rgba(255, 255, 255, 0.3);
+    }
+
+    .slidy-wrapper {
+        width: 100%;
+    }
+
+    .slide p {
+        color: rgba(255, 255, 255, 0.4)
+    }
+
+    .slide h2 {
+        line-height: 20px;
+        color: rgba(255, 255, 255, 0.6)
+    }
+
+    .active .slide h2 {
+        background: rgb(255, 58, 58);
+        background: linear-gradient(
+            90deg,
+            rgb(250, 50, 50) 0%,
+            rgb(209, 16, 122) 100%
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .active .slide p {
+        color: rgba(255, 255, 255, 0.6)
     }
 </style>
