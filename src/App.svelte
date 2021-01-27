@@ -5,6 +5,7 @@
     import Calendar from "./Calendar.svelte";
 
     let chat, chatButton, chatBox, newMsgIcon;
+    let downloadApp
     let showSync = false;
     let chatOpen = false;
     let calendarButton, calendar;
@@ -143,6 +144,10 @@
         syncButton.style.display = "none";
         updateCurrentEvent();
         updateCalendar();
+
+        let userAgent=navigator.userAgent||navigator.vendor;
+        if(userAgent.match( /Android/i ))
+            downloadApp.style.display = "block"
     });
 
     const viewChatBox = (show) => {
@@ -466,6 +471,12 @@
 
         <section id="section">
             <div class="section-content-container">
+                <div class="download-app-container" bind:this={downloadApp}>
+                    <p>Download our android app</p>
+                    <a href="https://play.google.com/store/apps/details?id=com.nitc.rajpathrecalls" target="__blank">
+                        <button>Go to PlayStore</button>
+                    </a>
+                </div>
                 <div class="slidy-wrapper">
                     <Slidy {...slidy} bind:index let:item>
                         <div class="slide">
@@ -865,5 +876,22 @@
 
     .active .slide p {
         color: rgba(255, 255, 255, 0.6)
+    }
+
+    .download-app-container {
+        display: none;
+    }
+
+    button {
+        padding: 15px 25px;
+        border-radius: 30px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 600;
+        font-family: Poppins;
+        font-size: 11pt;
+        background: none;
+        color: rgba(255, 255, 255, 0.8);
+        border: 2px solid rgba(255, 255, 255, 0.8);
     }
 </style>
