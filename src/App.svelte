@@ -5,7 +5,8 @@
     import Calendar from "./Calendar.svelte";
 
     let chat, chatButton, chatBox, newMsgIcon;
-    let downloadApp
+    let downloadApp, slidyWrapper;
+    let mouseDown = false;
     let showSync = false;
     let chatOpen = false;
     let calendarButton, calendar;
@@ -108,14 +109,14 @@
             overflow: "hidden",
         },
         controls: {
-            dots: true,
+            dots: false,
             dotsnum: false,
             dotsarrow: false,
-            dotspure: true,
+            dotspure: false,
             arrows: false,
             keys: false,
-            drag: true,
-            wheel: true,
+            drag: false,
+            wheel: false,
         },
         options: {
             axis: "x",
@@ -123,7 +124,7 @@
             duration: 350,
         },
     };
-    let index = 4;
+    let index = 0;
 
     onMount(() => {
         chatButton.onclick = () => {
@@ -145,10 +146,37 @@
         updateCurrentEvent();
         updateCalendar();
 
-        let userAgent=navigator.userAgent||navigator.vendor;
-        if(userAgent.match( /Android/i ))
-            downloadApp.style.display = "block"
+        slidyWrapper.onmousedown = () => {
+            mouseDown = true;
+        };
+        slidyWrapper.onmouseup = () => {
+            mouseDown = false;
+        };
+        slidyWrapper.ontouchstart = () => {
+            mouseDown = true;
+        };
+        slidyWrapper.ontouchend = () => {
+            mouseDown = false;
+        };
+
+        setInterval(() => {
+            if (mouseDown) return;
+            if (slidyWrapper.mousedown) return;
+            index++;
+            if (index == events.length) index = 0;
+        }, 3000);
+
+        let userAgent = navigator.userAgent || navigator.vendor;
+        if (userAgent.match(/Android/i)) downloadApp.style.display = "block";
     });
+
+    $: if(slidyWrapper) {
+        if (!mouseDown)
+            slidyWrapper.style.backgroundColor = "rgba(80, 87, 97, 0.1)";
+        else    
+            slidyWrapper.style.backgroundColor = "rgba(150, 70, 87, 0.15)";
+    }
+   
 
     const viewChatBox = (show) => {
         if (show) {
@@ -473,11 +501,14 @@
             <div class="section-content-container">
                 <div class="download-app-container" bind:this={downloadApp}>
                     <p>Download our android app</p>
-                    <a href="https://play.google.com/store/apps/details?id=com.nitc.rajpathrecalls" target="__blank">
+                    <a
+                        href="https://play.google.com/store/apps/details?id=com.nitc.rajpathrecalls"
+                        target="__blank"
+                    >
                         <button>Go to PlayStore</button>
                     </a>
                 </div>
-                <div class="slidy-wrapper">
+                <div bind:this={slidyWrapper} class="slidy-wrapper">
                     <Slidy {...slidy} bind:index let:item>
                         <div class="slide">
                             <!-- wrapper for new skin -->
@@ -846,20 +877,23 @@
         margin-top: 30px;
         font-size: 10px;
         font-weight: 300;
-        color: rgba(255, 255, 255, 0.3);
+        color: rgba(224, 224, 224, 0.3);
     }
 
     .slidy-wrapper {
         width: 100%;
+        background-color: rgba(87, 87, 87, 0.1);
+        padding: 0 15px;
+        border-radius: 15px;
     }
 
     .slide p {
-        color: rgba(255, 255, 255, 0.4)
+        color: rgba(255, 255, 255, 0.4);
     }
 
     .slide h2 {
         line-height: 20px;
-        color: rgba(255, 255, 255, 0.6)
+        color: rgba(255, 255, 255, 0.6);
     }
 
     .active .slide h2 {
@@ -875,11 +909,12 @@
     }
 
     .active .slide p {
-        color: rgba(255, 255, 255, 0.6)
+        color: rgba(255, 255, 255, 0.6);
     }
 
     .download-app-container {
         display: none;
+        margin-bottom: 90px;
     }
 
     button {
