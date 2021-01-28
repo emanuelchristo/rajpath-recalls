@@ -568,8 +568,8 @@
                     feedback. Feel free to contact us
                 </p>
                 <p>
-                    <a href="mailto:rajapathrecalls@gmail.com"
-                        >rajapathrecalls@gmail.com</a
+                    <a href="mailto:rajpathrecalls@gmail.com"
+                        >rajpathrecalls@gmail.com</a
                     >
                 </p>
                 <div class="social-icons-container">
