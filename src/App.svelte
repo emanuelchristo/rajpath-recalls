@@ -812,7 +812,7 @@
     }
 
     #section {
-        margin: 100px 0;
+        margin: 90px 0;
         text-align: center;
         color: rgba(255, 255, 255, 0.5);
     }
