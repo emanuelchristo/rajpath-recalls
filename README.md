@@ -1,6 +1,9 @@
-# Rajpath Recalls Web App
+# 📻 Rajpath Recalls Web App
 
 This is a web app for Rajpath Recalls online radio by NIT Calicut
 
-**Demo**
-[Static version of the app](https://rajpath-recalls.herokuapp.com/)
+See it in action - **[Rajpath Recalls Website](https://rajpath-recalls.web.app/)**
+
+## Developer
+
+[Emanuel Christo](https://instagram.com/emanuel.christo)
