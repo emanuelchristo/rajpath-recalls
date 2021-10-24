@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import Slidy from "svelte-slidy";
+    import { Slidy } from "svelte-slidy";
     import Chat from "./Chat.svelte";
     import Calendar from "./Calendar.svelte";
 
